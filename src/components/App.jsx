@@ -13,6 +13,7 @@ export const App = () => {
                 alignItems: 'center',
                 // fontSize: 40,
                 color: '#010101',
+                backgroundColor: 'lightsteelblue',
             }}
         >
             <h1>Phonebook</h1>

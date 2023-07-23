@@ -11,24 +11,52 @@ const persistConfig = {
     storage,
 };
 
+//** mockAPI */
+async function contactsFromMockAPI() {
+    await fetch(
+        'https://64b6ecf1df0839c97e164649.mockapi.io/contacts/contacts',
+        {
+            method: 'GET',
+            headers: { 'content-type': 'application/json' },
+        }
+    )
+        .then(res => {
+            if (res.ok) {
+                console.log('Status:', res.statusText);
+                return res.json();
+            }
+            // handle error
+        })
+        .then(contacts => {
+            console.log('contacts:', contacts);
+            // Do something with the list of tasks
+        })
+        .catch(error => {
+            // handle error
+        });
+}
+
+//** end mockAPI */
+
 // export const persistor = persistStore(store);
 //************* Persit E N D */
 
-// const initialStateContacts = JSON.parse(localStorage.getItem('contacts')) ?? [
+const initialStateContacts = contactsFromMockAPI();
+//     ?? [
 //     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
 //     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
 //     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
 //     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
 // ];
 
-const initialStateContacts = {
-    list: [
-        { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-        { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-        { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-        { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-};
+// const initialStateContacts = {
+//     list: [
+//         { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+//         { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+//         { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+//         { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+//     ],
+// };
 
 // get LocalStorage
 
@@ -42,6 +70,7 @@ const initialStateContacts = {
 // });
 
 const nanoid = customAlphabet('1234567890', 2);
+
 const contactsSlice = createSlice({
     name: 'contacts',
 
@@ -55,6 +84,7 @@ const contactsSlice = createSlice({
     //     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     // ],
     initialState: initialStateContacts,
+    error: null,
     reducers: {
         deleteContact(state, action) {
             return {
@@ -65,6 +95,7 @@ const contactsSlice = createSlice({
             // state.list.splice(action.contactId, 1);
             // window.localStorage.setItem('contacts', JSON.stringify(state));
         },
+
         addContact: {
             reducer(state, action) {
                 state.list.unshift(action.payload);
@@ -80,6 +111,9 @@ const contactsSlice = createSlice({
             },
             // window.localStorage.setItem('contacts', JSON.stringify(contacts))
         },
+        fetchingInProgress(state) {},
+        fetchingSucces() {},
+        // fetchingError,
     },
 });
 
