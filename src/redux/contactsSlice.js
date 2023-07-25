@@ -35,7 +35,6 @@ const handleAddContactFulfilled = (state, action) => {
 const handleDeleteContactFulfilled = (state, action) => {
     // console.log('delete contact');
     // console.log('state from del contact', state);
-    // console.log('state.list 1', state.list);
     // console.log('data contact:', action.payload);
     state.isLoading = false;
     state.error = null;
