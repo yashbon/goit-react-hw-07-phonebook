@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 // import { customAlphabet } from 'nanoid';
-import { addContact } from 'redux/contactsSlice';
+import { addContact } from 'redux/operations';
 import css from './ContactForm.module.css';
 
 // const nanoid = customAlphabet('1234567890', 2);
@@ -16,7 +16,7 @@ const ContactForm = () => {
         // console.log('submit: name', event.target.name);
         // console.log('submit: number', event.target.number);
         // console.dir(event.target);
-        const { name, number } = event.target.elements;
+        const { name, phone } = event.target.elements;
         // console.log(name.value);
 
         if (
@@ -29,7 +29,7 @@ const ContactForm = () => {
         } else {
             const newContact = {
                 name: name.value,
-                number: number.value,
+                phone: phone.value,
             };
             // console.log(newContact);
             dispatch(addContact(newContact));
@@ -85,12 +85,12 @@ const ContactForm = () => {
                 className={css.label}
                 // htmlFor=""
             >
-                Number
+                Phone
                 <br />
                 <input
                     className={css.input}
                     type="tel"
-                    name="number"
+                    name="phone"
                     pattern="^[0-9]+$"
                     title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                     required

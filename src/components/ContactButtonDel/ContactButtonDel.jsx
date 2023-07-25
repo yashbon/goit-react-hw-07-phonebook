@@ -1,16 +1,24 @@
 import { useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
+import { deleteContact, fetchContacts } from 'redux/operations';
 import css from './ContactButtonDel.module.css';
+import { useEffect } from 'react';
 
 const ContactButtonDel = ({ contactId }) => {
     const dispatch = useDispatch();
-    const handleDeleteContact = contactId => dispatch(deleteContact(contactId));
+    const handleDeleteContact = () => {
+        dispatch(deleteContact(contactId));
+    };
+
+    useEffect(() => {
+        dispatch(fetchContacts());
+    }, [dispatch]);
+
     return (
         <>
             <button
                 className={css.deleteContact_Button}
                 type="button"
-                onClick={() => handleDeleteContact(contactId)}
+                onClick={handleDeleteContact}
             >
                 delete
             </button>

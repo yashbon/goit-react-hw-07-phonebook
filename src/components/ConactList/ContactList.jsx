@@ -1,17 +1,30 @@
 import ConactListItem from 'components/ContactLitsItem/ContactListItem';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import css from './ContactList.module.css';
+import { useEffect } from 'react';
+import { fetchContacts } from 'redux/operations';
 
 const ContactList = () => {
     // Отримуємо необхідну частину стану
-    const contacts = useSelector(state => state.contacts.list);
-    // console.log(contacts);
+    const contacts = useSelector(state => {
+        // console.log('state', state);
+        return state.contacts.list;
+        // console.log(fetchContacts());
+        // return fetchContacts();
+    });
+    // console.log('contacts', contacts);
     const filter = useSelector(state => state.filter.filter);
-    // console.log(filter);
+    // console.log('filter:', filter);
 
     const filteredContacts = contacts.filter(contact =>
         contact.name.toLowerCase().includes(filter.toLowerCase())
     );
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchContacts());
+        // console.log('render list');
+    }, [dispatch]);
 
     // console.log(contacts);
     return (

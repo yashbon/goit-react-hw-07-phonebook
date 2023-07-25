@@ -4,7 +4,7 @@ const ConactListItem = ({ contact }) => {
     return (
         <>
             <p style={{ margin: 0 }}>
-                <span>{contact.name}</span> <span>{contact.number}</span>
+                <span>{contact.name}</span> <span>{contact.phone}</span>
             </p>
             <ContactButtonDel
                 // className={css.deleteContact_Button}
@@ -13,4 +13,5 @@ const ConactListItem = ({ contact }) => {
         </>
     );
 };
+
 export default ConactListItem;

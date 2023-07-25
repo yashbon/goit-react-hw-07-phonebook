@@ -1,47 +1,127 @@
 // import { nanoid } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { customAlphabet } from 'nanoid';
+// import { customAlphabet } from 'nanoid';
 
 // ************ Persit
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+// import { persistReducer } from 'redux-persist';
+// import storage from 'redux-persist/lib/storage';
 
-const persistConfig = {
-    key: 'root',
-    storage,
+import { fetchContacts, addContact, deleteContact } from './operations';
+
+const handlePending = state => {
+    state.isLoading = true;
 };
 
+const handleRejected = (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+};
+
+const handleFulfilled = (state, action) => {
+    // console.log('handleFulfilled');
+    state.isLoading = false;
+    state.error = null;
+    state.list = action.payload;
+    // console.log(state.list);
+};
+
+const handleAddContactFulfilled = (state, action) => {
+    // console.log('state from addContact', state);
+    state.isLoading = false;
+    state.error = null;
+    state.list.push(action.payload);
+};
+
+const handleDeleteContactFulfilled = (state, action) => {
+    // console.log('delete contact');
+    // console.log('state from del contact', state);
+    // console.log('state.list 1', state.list);
+    // console.log('data contact:', action.payload);
+    state.isLoading = false;
+    state.error = null;
+    //  state.list.filter(contact => contact.id !== action.payload);
+    // state.list.push(action.payload);
+    // console.log('state.list 2', state.list);
+
+    const index = state.list.findIndex(
+        contact => contact.id === action.payload.id
+    );
+    // console.log(index);
+
+    state.list.splice(index, 1);
+
+    // state.list.filter(contact => contact.id !== action.payload);
+};
+
+// const contactsInitialState = {
+//     list: [],
+//     isLoading: false,
+//     error: null,
+// };
+
+const contactsSlice = createSlice({
+    name: 'contacts',
+    initialState: {
+        list: [],
+        isLoading: false,
+        error: null,
+    },
+
+    extraReducers: builder => {
+        builder
+            .addCase(fetchContacts.pending, handlePending)
+            .addCase(fetchContacts.fulfilled, handleFulfilled)
+            .addCase(fetchContacts.rejected, handleRejected)
+            .addCase(addContact.pending, handlePending)
+            .addCase(addContact.fulfilled, handleAddContactFulfilled)
+            .addCase(addContact.rejected, handleRejected)
+            .addCase(deleteContact.pending, handlePending)
+            .addCase(deleteContact.fulfilled, handleDeleteContactFulfilled)
+            .addCase(deleteContact.rejected, handleRejected);
+    },
+});
+// contactsSlice.list = fetchContacts();
+export const contactsReducer = contactsSlice.reducer;
+// contactsSlice.list = fetchContacts();
+// const persistConfig = {
+//     key: 'root',
+//     storage,
+// };
+
 //** mockAPI */
-async function contactsFromMockAPI() {
-    await fetch(
-        'https://64b6ecf1df0839c97e164649.mockapi.io/contacts/contacts',
-        {
-            method: 'GET',
-            headers: { 'content-type': 'application/json' },
-        }
-    )
-        .then(res => {
-            if (res.ok) {
-                console.log('Status:', res.statusText);
-                return res.json();
-            }
-            // handle error
-        })
-        .then(contacts => {
-            console.log('contacts:', contacts);
-            // Do something with the list of tasks
-        })
-        .catch(error => {
-            // handle error
-        });
-}
+
+// let initialStateContacts;
+// async function contactsFromMockAPI() {
+//     await fetch(
+//         'https://64b6ecf1df0839c97e164649.mockapi.io/contacts/contacts',
+//         {
+//             method: 'GET',
+//             headers: { 'content-type': 'application/json' },
+//         }
+//     )
+//         .then(res => {
+//             if (res.ok) {
+//                 console.log('Status:', res.statusText);
+//                 // initialStateContacts = res.json();
+//                 return res.json();
+//                 // handle error
+//             }
+//         })
+//         .then(contacts => {
+//             console.log('contacts:', contacts);
+//             // Do something with the list of tasks
+//         })
+//         .catch(error => {
+//             // handle error
+//         });
+// }
+// console.log(initialStateContacts);
 
 //** end mockAPI */
 
 // export const persistor = persistStore(store);
 //************* Persit E N D */
 
-const initialStateContacts = contactsFromMockAPI();
 //     ?? [
 //     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
 //     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
@@ -69,75 +149,79 @@ const initialStateContacts = contactsFromMockAPI();
 //     };
 // });
 
-const nanoid = customAlphabet('1234567890', 2);
+// const nanoid = customAlphabet('1234567890', 2);
 
-const contactsSlice = createSlice({
-    name: 'contacts',
+// const contactsSlice = createSlice({
+//     name: 'contacts',
 
-    // get LocalStorage
-    //JSON.parse(localStorage.getItem('contacts')) ?? dataContacts
+//     // get LocalStorage
+//     //JSON.parse(localStorage.getItem('contacts')) ?? dataContacts
 
-    // initialState: [
-    //     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    //     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    //     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    //     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    // ],
-    initialState: initialStateContacts,
-    error: null,
-    reducers: {
-        deleteContact(state, action) {
-            return {
-                list: state.list.filter(
-                    contact => contact.id !== action.payload
-                ),
-            };
-            // state.list.splice(action.contactId, 1);
-            // window.localStorage.setItem('contacts', JSON.stringify(state));
-        },
+//     // initialState: [
+//     //     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+//     //     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+//     //     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+//     //     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+//     // ],
+//     initialState: contactsFromMockAPI(),
+//     error: null,
+//     reducers: {
+//         deleteContact(state, action) {
+//             console.log('delete contact');
+//             console.log(state);
+//             console.log(action);
 
-        addContact: {
-            reducer(state, action) {
-                state.list.unshift(action.payload);
-                // window.localStorage.setItem('contacts', JSON.stringify(state));
-            },
-            prepare(newContact) {
-                return {
-                    payload: {
-                        id: 'id-' + nanoid(),
-                        ...newContact,
-                    },
-                };
-            },
-            // window.localStorage.setItem('contacts', JSON.stringify(contacts))
-        },
-        fetchingInProgress(state) {},
-        fetchingSucces() {},
-        // fetchingError,
-    },
-});
+// return {
+//     list: state.list.filter(
+//         contact => contact.id !== action.payload
+//     ),
+//             // };
+
+//             // state.list.splice(action.contactId, 1);
+//             // window.localStorage.setItem('contacts', JSON.stringify(state));
+//         },
+
+//         addContact: {
+//             reducer(state, action) {
+//                 state.list.unshift(action.payload);
+//                 // window.localStorage.setItem('contacts', JSON.stringify(state));
+//             },
+//             prepare(newContact) {
+//                 return {
+//                     payload: {
+//                         id: 'id-' + nanoid(),
+//                         ...newContact,
+//                     },
+//                 };
+//             },
+//             // window.localStorage.setItem('contacts', JSON.stringify(contacts))
+//         },
+//         fetchingInProgress(state) {},
+//         fetchingSucces() {},
+//         // fetchingError,
+//     },
+// });
 
 // console.log(contactsSlice.getInitialState());
 // console.log(contactsSlice);
 
-export const { deleteContact, addContact } = contactsSlice.actions;
+// export const { deleteContact, addContact } = contactsSlice.actions;
+
 // export const persistedContactsReducer = contactsSlice.reducer;
-export const contactsReducer = persistReducer(
-    persistConfig,
-    contactsSlice.reducer
-);
+
+// export const contactsReducer = contactsSlice.reducer;
 
 // export const contactsReducer = createReducer(initialStateContcts, builder =>
-//     builder
-//         .addCase(deleteContact, (state, action) => {
-//             // return state.filter(contact => contact.id !== action.payload);
+// builder
+//     .addCase(deleteContact, (state, action) => {
+//         // return state.filter(contact => contact.id !== action.payload);
 
-//             // there add to LocalStorage
-//             state.splice(action.contactId, 1);
-//         })
-//         .addCase(addContact, (state, action) => {
-//             state.unshift(action.payload);
-//         })
+//         // there add to LocalStorage
+//         state.splice(action.contactId, 1);
+//     })
+//     .addCase(addContact, (state, action) => {
+//         state.unshift(action.payload);
+//     })
 // );
 
 // export const contactsReducer = (state = initialStateContcts, action) => {
