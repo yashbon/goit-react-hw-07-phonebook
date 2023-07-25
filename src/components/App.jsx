@@ -1,14 +1,21 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchContacts } from 'redux/operations';
-import { useEffect } from 'react';
+import {
+    // useDispatch,
+    useSelector,
+} from 'react-redux';
+// import { fetchContacts } from 'redux/operations';
+// import { useEffect } from 'react';
 import ContactList from './ConactList/ContactList';
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 
 export const App = () => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     // Отримуємо частини стану
-    const { list, isLoading, error } = useSelector(state => state.contacts);
+    const {
+        // list,
+        isLoading,
+        error,
+    } = useSelector(state => state.contacts);
 
     // Викликаємо операцію
     // useEffect(() => {
